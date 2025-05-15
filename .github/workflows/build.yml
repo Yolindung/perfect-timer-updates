@@ -22,13 +22,27 @@ jobs:
         python -m pip install --upgrade pip
         pip install PyQt6==6.6.1
         pip install pyinstaller
+        pip list  # 显示已安装的包
+    
+    - name: List directory contents
+      run: |
+        dir
+        dir perfect-timer-updates
     
     - name: Build executable
       run: |
-        pyinstaller timer.spec
+        pyinstaller --clean timer.spec
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "PyInstaller build failed"
+          exit 1
+        }
     
     - name: Calculate MD5
       run: |
+        if (-not (Test-Path "dist/完美计时器.exe")) {
+          Write-Error "Executable not found in dist directory"
+          exit 1
+        }
         python -c "
         import hashlib
         import json

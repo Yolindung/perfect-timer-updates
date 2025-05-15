@@ -40,5 +40,4 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='timer.ico'  # 如果你有图标文件的话
 ) 
