@@ -70,10 +70,12 @@ jobs:
         "
     
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-executable
         path: dist/完美计时器.exe
+        retention-days: 5
+        if-no-files-found: error
     
     - name: Commit and push changes
       run: |
