@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
-    "download_url": "https://raw.githubusercontent.com/yolindung/perfect-timer-updates/main/downloads/完美计时器_1.0.0.exe",
-    "md5": "这里将填入文件的MD5值",
-    "release_notes": "初始版本发布",
-    "release_date": "2024-03-21"
+    "download_url": "https://yolindung.github.io/perfect-timer-updates/downloads/完美计时器_1.0.0.exe",
+    "release_notes": "首次发布版本",
+    "release_date": "2024-03-21",
+    "md5": ""
 } 

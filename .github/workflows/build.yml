@@ -1,0 +1,70 @@
+name: Build Windows Executable
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install PyQt6==6.6.1
+        pip install pyinstaller
+    
+    - name: Build executable
+      run: |
+        pyinstaller timer.spec
+    
+    - name: Calculate MD5
+      run: |
+        python -c "
+        import hashlib
+        import json
+        import os
+        
+        def calculate_md5(file_path):
+            md5_hash = hashlib.md5()
+            with open(file_path, 'rb') as f:
+                for chunk in iter(lambda: f.read(4096), b''):
+                    md5_hash.update(chunk)
+            return md5_hash.hexdigest()
+        
+        exe_path = 'dist/完美计时器.exe'
+        md5 = calculate_md5(exe_path)
+        
+        # 更新 version.json
+        version_file = 'perfect-timer-updates/version.json'
+        with open(version_file, 'r', encoding='utf-8') as f:
+            version_data = json.load(f)
+        
+        version_data['md5'] = md5
+        
+        with open(version_file, 'w', encoding='utf-8') as f:
+            json.dump(version_data, f, ensure_ascii=False, indent=4)
+        "
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-executable
+        path: dist/完美计时器.exe
+    
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'actions@github.com'
+        git add perfect-timer-updates/version.json
+        git commit -m "Update version.json with new MD5" || exit 0
+        git push 
